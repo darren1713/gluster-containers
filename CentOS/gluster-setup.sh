@@ -19,6 +19,15 @@ main () {
   GLUSTERFS_LOG_CONT_DIR="/var/log/glusterfs/container"
   GLUSTERFS_CUSTOM_FSTAB="/var/lib/heketi/fstab"
 
+  $(ls -1q /etc/glusterfs | wc -l) eq 1
+
+  # Handle case where startup image already has a single file gsyncd.conf in
+  # /etc/glusterfs which stops the initial sync from running properly. Check if
+  # there is only 1 file in the /etc/glusterfs directory, and delete it if so. 
+  if [ "$(ls -1q /etc/glusterfs | wc -l)" -eq "1" ]; then
+    rm /etc/glusterfs/*
+  fi
+
   mkdir $GLUSTERFS_LOG_CONT_DIR
   for i in $GLUSTERFS_CONF_DIR $GLUSTERFS_LOG_DIR $GLUSTERFS_META_DIR
   do
