@@ -1,0 +1,9 @@
+#!/bin/bash
+# ------------------------ [START] required variables ------------------------ #
+DOCKER_IMAGE_NAME='gluster'
+
+DOCKER_IMAGE_VERSION='0.0.2'
+
+CLOUDSDK_PROJECT_NAME='my-gluster-project'
+# ------------------------- [END] required variables ------------------------- #
+

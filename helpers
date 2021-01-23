@@ -1,0 +1,85 @@
+#!/bin/bash
+# ------------------------- [START] set shell options ------------------------ #
+# exit script immediately if anything errors
+set -e
+
+# allow tracing to be toggled on
+if [ "$DEBUG_GLUSTER_CONTAINERS" = 'true' ]
+then
+  set -x
+fi
+# -------------------------- [END] set shell options ------------------------- #
+
+# ------------------------- [START] get project path ------------------------- #
+# get full path to this project
+project_dir="$(cd -P -- "$(dirname -- "$0")" 2>&1 > /dev/null && pwd -P)"
+
+# check that the project directory didn't turn out empty
+if [ -z "$project_dir" ]
+then
+  echo "Some error occured getting the full path to this project's directory."
+
+  # this is intended to be sourced instead of executed so we return
+  # instead of exiting so we don't exit the shell session entirely
+  return 1
+fi
+# -------------------------- [END] get project path -------------------------- #
+
+# ------------------------ [START] source config file ------------------------ #
+. "$project_dir/config"
+# ------------------------- [END] source config file ------------------------- #
+
+export project_name=${CLOUDSDK_PROJECT_NAME:-"my-gluster-project"}
+export docker_registry=${DOCKER_REGISTRY:-"gcr.io/$project_name"}
+export docker_image_name=${DOCKER_IMAGE_NAME:-'glusterfs'}
+export docker_image_version=${DOCKER_IMAGE_VERSION:-'0.0.1'}
+
+export job_image_centos="$docker_registry/$docker_image_name-centos:$docker_image_version"
+export job_image_fedora="$docker_registry/$docker_image_name-fedora:$docker_image_version"
+
+echo "----------------------------"
+echo "Project Settings:"
+echo "----------------------------"
+echo "project_name:         $project_name"
+echo "docker_registry:      $docker_registry"
+echo "docker_image_name:    $docker_image_name"
+echo "docker_image_version: $docker_image_version"
+echo "job_image_centos:     $job_image_centos"
+echo "job_image_fedora:     $job_image_fedora"
+echo "----------------------------"
+sleep 3
+
+# ----------------------- [END] set optional variables ----------------------- #
+
+gke_gluster_centos_build_image () {
+  if [ -z "$(which docker)" ]
+  then
+    echo "You need docker installed to build this image."
+  else
+    docker build -t "$job_image_centos" CentOS
+  fi
+}
+
+gke_gluster_centos_push_image () {
+  docker push "$job_image_centos"
+}
+
+gke_gluster_fedora_build_image () {
+  if [ -z "$(which docker)" ]
+  then
+    echo "You need docker installed to build this image."
+  else
+    docker build -t "$job_image_fedora" Fedora
+  fi
+}
+
+gke_gluster_fedora_push_image () {
+  docker push "$job_image_fedora"
+}
+
+
+echo "use local functions as follows:"
+echo "gke_gluster_centos_build_image"
+echo "gke_gluster_centos_push_image"
+echo "gke_gluster_fedora_build_image"
+echo "gke_gluster_fedora_push_image"
