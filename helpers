@@ -56,7 +56,7 @@ gke_gluster_centos_build_image () {
   then
     echo "You need docker installed to build this image."
   else
-    docker build -t "$job_image_centos" CentOS
+    docker build --format=docker -t "$job_image_centos" CentOS
   fi
 }
 
@@ -69,7 +69,7 @@ gke_gluster_fedora_build_image () {
   then
     echo "You need docker installed to build this image."
   else
-    docker build -t "$job_image_fedora" Fedora
+    docker build --format=docker -t "$job_image_fedora" Fedora
   fi
 }
 
