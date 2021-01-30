@@ -61,7 +61,7 @@ gke_gluster_centos_build_image () {
 }
 
 gke_gluster_centos_push_image () {
-  docker push "$job_image_centos"
+  docker push --format=v2s2 "$job_image_centos"
 }
 
 gke_gluster_fedora_build_image () {
@@ -74,7 +74,7 @@ gke_gluster_fedora_build_image () {
 }
 
 gke_gluster_fedora_push_image () {
-  docker push "$job_image_fedora"
+  docker push --format=v2s2 "$job_image_fedora"
 }
 
 
